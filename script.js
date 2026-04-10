@@ -112,8 +112,13 @@ function updateScore(score){
 
 }
 
-function updateTimers(endMs){
-
+function updateTimers(endtime){
+    const elapsed = Math.round((endtime - startTime) / 1000);
+    times.push(elapsed);
+    const fastest = Math.min(...times);
+    document.getElementById("fastest").textContent = "Fastest Game: " + fastest + " seconds";
+    const avgtime = (times.reduce((a,b) => a + b,0) / times.length).toFixed(1);
+    document.getElementById("avgTime").textContent = "Average Time: " + avgtime + "seconds";
 }
 
 function giveUp(){

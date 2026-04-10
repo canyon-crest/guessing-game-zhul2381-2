@@ -32,7 +32,7 @@ function time(){
     const sec  = String(today.getSeconds()).padStart(2,"0");
     const amorpm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12;
-    return `${month} ${day}${suffix}, ${year} | ${hours}:${mins}:${sec} ${amorpm}`;
+    return `${month} ${day}${suffix}, ${year} ${hours}:${mins}:${sec} ${amorpm}`;
 }
 
 document.getElementById("date").textContent = time();

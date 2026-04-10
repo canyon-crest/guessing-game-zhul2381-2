@@ -1,14 +1,52 @@
 // add javascript here
+
+const enteredname = prompt("Enter your name.");
+const playername = enteredname.charAt(0).toUpperCase() + enteredname.slice(1).toLowerCase();
+
 let guess = 0;
 let guessCount = 0;
+let answer = 0;
+let range = 0;
+let startTime = 0;
+const times = [];
 const scores = [];
+
+const months = ["January", "February","March","April","May","June", "July","August","September","October","November","December"];
+
+function getDaySuffix(day){
+    if (day >= 11 && day <= 13) return "th";
+    if (day % 10 === 1) return "st";
+    if (day % 10 === 2) return "nd";
+    if (day % 10 === 3) return "rd";
+    return "th";
+}
+
+function time(){
+    const today = new Date();
+    const month = months[today.getMonth()];
+    const day = today.getDate();
+    const suffix = getDaySuffix(day)
+    const year = today.getFullYear();
+    let hours = today.getHours();
+    const mins  = String(today.getMinutes()).padStart(2,"0");
+    const sec  = String(today.getSeconds()).padStart(2,"0");
+    const amorpm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    return `${month} ${day}${suffix}, ${year} | ${hours}:${mins}:${sec} ${amorpm}`;
+}
+
+document.getElementById("date").textContent = time();
+setInterval(function () {
+    document.getElementById("date").textContent = time();
+}, 1000);
 
 document.getElementById("playBtn").addEventListener("click",play);
 document.getElementById("guessBtn").addEventListener("click", makeGuess);
+document.getElementById("giveUpBtn").addEventListener("click", giveUp);
 
 
 function play(){
-    let range = 0;
+    range = 0;
     let levels = document.getElementsByName("level");
     for (let i=0; i<levels.length; i++){
         if(levels[i].checked){
@@ -16,13 +54,14 @@ function play(){
     }
     levels[i].disabled = true;
 }
-        document.getElementById("msg").textContent = "Guess a number 1-" + range;
+        document.getElementById("msg").textContent = "Hi" + playername + ", Guess a number 1-" + range;
     answer = Math.floor(Math.random()*range) +1;
     guessCount = 0;
 
     guessBtn.disabled = false;
     giveUpBtn.disabled = false
     playBtn.disabled = true;
+    startTime = new Date().getTime();
 
 }
 
@@ -34,16 +73,23 @@ function makeGuess(){
     }
     guessCount++;
     if(guess == answer){
-        msg.textContent = "Correct! It took " + guessCount + "tries.";
+        msg.textContent = "Correct!" + playername + ". It took " + guessCount + "tries.";
         updateScore(guessCount);
         resetGame();
     }
     else if (guess < answer){
-        msg.textContent = "Too low, try again";
+        const diff = Math.abs(guess-answer);
+        if (diff <= 2) msg.textContent = "Hot. You are too low.";
+        else if (diff <=5) msg.textContent = "Warm. You are too low.";
+        else msg.textContent = "Cold. You are too low.";
     }
     else{
-        msg.textContent = "Too high, try again.";
+        const diff = Math.abs(guess-answer);
+        if (diff <= 2) msg.textContent = "Hot. You are too high.";
+        else if (diff <=5) msg.textContent = "Warm. You are too high.";
+        else msg.textContent = "Cold. You are too high.";
     }
+    updateTimers(new Date().getTime());
 }
     
 function updateScore(score){
@@ -65,8 +111,25 @@ function updateScore(score){
     }
 
 }
+
+function updateTimers(endMs){
+
+}
+
+function giveUp(){
+    msg.textContent = playername + ". The answer was " + answer + ". Your score is set to " + range + ".";
+    updateScore(range);
+    guessBtn.disabled = true;
+    giveUpBtn.disabled = true;
+    playBtn.disabled = false;
+    e.disabled = false;
+    m.disabled = false;
+    h.disabled = false;
+    updateTimers(new Date().getTime());
+}
+
 function resetGame(){
-    guess.value = "";
+    document.getElementById("guess").value= "";
     guessBtn.disabled = true;
     giveUpBtn.disabled = true;
     playBtn.disabled = false;
@@ -74,3 +137,5 @@ function resetGame(){
     m.disabled = false;
     h.disabled = false;
 }
+
+

@@ -43,7 +43,11 @@ setInterval(function () {
 document.getElementById("playBtn").addEventListener("click",play);
 document.getElementById("guessBtn").addEventListener("click", makeGuess);
 document.getElementById("giveUpBtn").addEventListener("click", giveUp);
-
+document.getElementById("guess").addEventListener("keydown", function(e){
+    if(e.key === "Enter" && !guessBtn.disabled){
+        makeGuess();
+    }
+});
 
 function play(){
     range = 0;
@@ -67,16 +71,32 @@ function play(){
 
 function makeGuess(){
     let guess = parseInt(document.getElementById("guess").value);
+
     if(isNaN(guess)){
         msg.textContent = "Please enter a valid number";
         return;
     }
+
+    if (guess < 1 || guess > range){
+        msg.textContent = "Enter a number between 1 and " + range + ".";
+        return; 
+    }
+
     guessCount++;
-    if(guess == answer){
-        msg.textContent = "Correct!" + playername + ". It took " + guessCount + "tries.";
+
+    if (guess == answer){
+        let quality = "";
+        if (guessCount === 1) quality = "Amazing!";
+        else if(guessCount <= 5) quality = "Great!";
+        else if(guessCount <= 10) quality = "Good!";
+        else quality = "Keep practicing!";
+
+        msg.textContent = "Correct " + playername + "! It took you " + guessCount + " tries." + quality;
+        updateTimers(new Date().getTime());
         updateScore(guessCount);
         resetGame();
     }
+
     else if (guess < answer){
         const diff = Math.abs(guess-answer);
         if (diff <= 2) msg.textContent = "Hot. You are too low.";
@@ -89,8 +109,8 @@ function makeGuess(){
         else if (diff <=5) msg.textContent = "Warm. You are too high.";
         else msg.textContent = "Cold. You are too high.";
     }
-    updateTimers(new Date().getTime());
 }
+
     
 function updateScore(score){
     scores.push(score);

@@ -91,7 +91,7 @@ function makeGuess(){
         else if(guessCount <= 10) quality = "Good!";
         else quality = "Keep practicing!";
 
-        msg.textContent = "Correct " + playername + "! It took you " + guessCount + " tries." + quality;
+        msg.textContent = "Correct " + playername + "! It took you " + guessCount + " tries. " + quality;
         updateTimers(new Date().getTime());
         updateScore(guessCount);
         resetGame();
